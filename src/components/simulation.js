@@ -129,7 +129,7 @@ export default function Simulation() {
                         selectedComponentRef.current.elem && selectedComponentRef.current.id !== wire.id) // If the selected component is not the SVG element and the wire ID does not match the selected component ID, return the wire
                     )
             } else if (e.key === 'Escape') { // If the key is the escape key
-                setSelectedComponent({elem: svgRef.current, id: -1}) // Set the selected component to the SVG element
+                setSelectedComponent({id: -1, elem: svgRef.current}) // Set the selected component to the SVG element
                 if (wiringRef.current.active) setWiring({id: null, active: false, start: null, points: [], end: null}) // If the wire is being drawn, cancel the wire
             }
         })

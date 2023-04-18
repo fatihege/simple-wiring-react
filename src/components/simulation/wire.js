@@ -55,8 +55,8 @@ export default function Wire(props) {
     }
 
     const handleWireHover = state => { // Handle the wire being hovered over
-        if (wire.active || wiring.active || !wireRef.current.contains(selectedComponent.elem)) return // If the wire is being drawn, return
-        setHover(state) // Set the hover state to true
+        if (wire.active || wiring.active || (selectedComponent?.id > 0 && selectedComponent.id !== wire.id)) return // If a wire is being drawn or another wire is selected, return
+        setHover(state) // Set the hover state
     }
 
     useEffect(() => { // If the selected component changes, check if the wire contains the selected component
