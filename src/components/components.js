@@ -7,7 +7,10 @@ export default function Components() {
 
     return (
         <div className={styles.container}>
-            <button onClick={() => setSnapping(!snapping.current)}>{snapping.current ? 'Disable' : 'Enable'} Snapping</button>
+            <button onClick={() => setSnapping(!snapping.current)}
+                    title="If enabled, wire joints are automatically aligned when they are close to each other.">
+                {snapping.current ? 'Disable' : 'Enable'} Snapping
+            </button>
         </div>
     )
 }

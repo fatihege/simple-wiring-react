@@ -4,10 +4,10 @@ import Components from '@/components/components'
 import Simulation from '@/components/simulation'
 import styles from '@/styles/Home.module.sass'
 
-export const SnappingContext = createContext(false) // Whether snapping is enabled
+export const SnappingContext = createContext(true) // Whether snapping is enabled
 
 export default function Home() {
-    const [snapping, _setSnapping] = useState(false) // Whether snapping is enabled
+    const [snapping, _setSnapping] = useState(true) // Whether snapping is enabled
     const snappingRef = useRef(snapping) // Reference to the snapping state
 
     const setSnapping = value => { // Set the snapping state
