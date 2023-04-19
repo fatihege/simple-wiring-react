@@ -143,7 +143,7 @@ export default function Simulation() {
         window.addEventListener('wheel', () => setSvgRect(svgRef.current.getBoundingClientRect())) // If the mouse wheel is scrolled, update the SVG element's bounding rectangle
         window.addEventListener('keydown', e => { // If a key is pressed
             if (e.key === 'Delete') { // If the key is the delete key
-                if (!selectedComponentRef.current.elem || selectedComponentRef.current.elem.contains(svgRef.current)) return // If the selected component is the SVG element, return
+                if (!selectedComponentRef.current?.elem || selectedComponentRef.current.elem.contains(svgRef.current)) return // If the selected component is the SVG element, return
                 if (typeof activeJointRef.current?.id !== 'number') setWires(wiresRef.current.filter(wire => // If the mouse is not over a joint, filter the wires array
                     selectedComponentRef.current.elem && selectedComponentRef.current.id !== wire.id) // If the selected component is not the SVG element and the wire ID does not match the selected component ID, return the wire
                 )

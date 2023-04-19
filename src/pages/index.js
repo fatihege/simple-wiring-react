@@ -17,9 +17,10 @@ export default function Home() {
                 <p>
                     A simple simulator for Arduino projects made with React.
                 </p>
-                <p style={{fontSize: '.9rem', marginTop: '.5rem', color: '#5b5b5b'}}>
-                    Click to draw a line, right click to cancel the line, drag the joints to move the line, press the
-                    delete key to delete the line and press the escape key to deselect the component.
+                <p style={{fontSize: '.9rem', marginTop: '.5rem', color: '#5b5b5b', maxWidth: '800px'}}>
+                    Click to draw a line, right click to cancel the line, drag the joints to move the line, double click
+                    line to create joint and press delete on the joint to delete the joint, press the delete key to
+                    remove the line, and press the escape key to deselect the component.
                 </p>
                 <Components/>
                 <Simulation/>
