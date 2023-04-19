@@ -9,6 +9,8 @@ export const WiresContext = createContext([]) // Create a context for the wires
 export const WiringContext = createContext(false) // Create a context for the wire being drawn
 export const WireJointsContext = createContext(null) // Create a context for the wire joints
 
+const SNAPPING_DISTANCE = 5 // Distance to snap to a joint
+
 export default function Simulation() {
     const svgRef = useRef() // Reference to the SVG element
     const [svgRect, _setSvgRect] = useState(null)
@@ -27,6 +29,8 @@ export default function Simulation() {
     const wiringRef = useRef(wiring) // Reference to the current wire
     const selectedComponentRef = useRef(selectedComponent) // Reference to the selected component
     const activeJointRef = useRef(activeJoint) // Reference to the selected component
+    const xAxisRef = useRef()
+    const yAxisRef = useRef()
 
     const setSvgRect = value => { // Set the SVG element's rect
         svgRectRef.current = value
@@ -52,6 +56,22 @@ export default function Simulation() {
     const setActiveJoint = value => { // Set the active joint
         activeJointRef.current = value
         _setActiveJoint(value)
+    }
+
+    const showAxis = (axis, pos, hide = false) => { // Show the axis
+        if (axis === 'x') { // If the axis is the x axis
+            if (hide) xAxisRef.current.classList.remove(styles.show) // If hide is true, remove the show class from the x axis
+            else {
+                xAxisRef.current.style.top = `${pos}px` // Set the top position of the x axis
+                xAxisRef.current.classList.add(styles.show) // Add the show class to the x axis
+            }
+        } else if (axis === 'y') { // If the axis is the y axis
+            if (hide) yAxisRef.current.classList.remove(styles.show) // If hide is true, remove the show class from the y axis
+            else {
+                yAxisRef.current.style.left = `${pos}px` // Set the left position of the y axis
+                yAxisRef.current.classList.add(styles.show) // Add the show class to the y axis
+            }
+        }
     }
 
     // TODO: Remove this
@@ -111,8 +131,32 @@ export default function Simulation() {
                         if (activeJointRef.current.id === wire.start.id) return {...wire, start: {...wire.start, x, y}} // If the joint is the start point of the wire, update the start point
                         else if (activeJointRef.current.id === wire.end.id) return {...wire, end: {...wire.end, x, y}} // If the joint is the end point of the wire, update the end point
                         else { // If the joint is a point in the wire, update the point
+                            const pointPos = wire.points.find(point => point.id === activeJointRef.current.id) // Get the position of the point in the points array
                             const newPoints = wire.points.map(point => { // Map through the points array
-                                if (point.id === activeJointRef.current.id) return {...point, x, y} // If the point ID matches the point ID of the active joint, update the point
+                                let xSnapId = null // ID of the point to snap to on the x axis
+                                let ySnapId = null // ID of the point to snap to on the y axis
+
+                                if (xSnapId === null && Math.abs(x - wire.start.x) < SNAPPING_DISTANCE) xSnapId = wire.start.id // If the x coordinate is within the snapping distance of the start point, set the xSnapId to the start point ID
+                                if (ySnapId === null && Math.abs(y - wire.start.y) < SNAPPING_DISTANCE) ySnapId = wire.start.id // If the y coordinate is within the snapping distance of the start point, set the ySnapId to the start point ID
+
+                                if (xSnapId === null && Math.abs(x - wire.end.x) < SNAPPING_DISTANCE) xSnapId = wire.end.id // If the x coordinate is within the snapping distance of the end point, set the xSnapId to the end point ID
+                                if (ySnapId === null && Math.abs(y - wire.end.y) < SNAPPING_DISTANCE) ySnapId = wire.end.id // If the y coordinate is within the snapping distance of the end point, set the ySnapId to the end point ID
+
+                                wire.points.map(p => {
+                                    if (p.id === pointPos.id) return // If the point ID matches the point ID of the active joint, return (to prevent snapping to itself
+                                    if (xSnapId === null && Math.abs(x - p.x) < SNAPPING_DISTANCE) xSnapId = p.id // If the x coordinate is within the snapping distance of a point, set the xSnapId to the point ID
+                                    if (ySnapId === null && Math.abs(y - p.y) < SNAPPING_DISTANCE) ySnapId = p.id // If the y coordinate is within the snapping distance of a point, set the ySnapId to the point ID
+                                })
+
+                                const newX = xSnapId ? (xSnapId >= 0 ? wire.points.find(p => p.id === xSnapId).x : xSnapId === -1 ? wire.start.x : xSnapId === -2 ? wire.end.x : x) : x // If the xSnapId is not null, set the x coordinate to the x coordinate of the point to snap to, otherwise set the x coordinate to the x coordinate of the mouse
+                                const newY = ySnapId ? (ySnapId >= 0 ? wire.points.find(p => p.id === ySnapId).y : ySnapId === -1 ? wire.start.y : ySnapId === -2 ? wire.end.y : y) : y // If the ySnapId is not null, set the y coordinate to the y coordinate of the point to snap to, otherwise set the y coordinate to the y coordinate of the mouse
+
+                                if (xSnapId) showAxis('y', newX) // If the xSnapId is not null, show the x axis
+                                else showAxis('y', null, true) // If the xSnapId is null, hide the x axis
+                                if (ySnapId) showAxis('x', newY) // If the ySnapId is not null, show the y axis
+                                else showAxis('x', null, true) // If the ySnapId is null, hide the y axis
+
+                                if (point.id === activeJointRef.current.id) return {...point, x: newX, y: newY} // If the point ID matches the point ID of the active joint, update the point
                                 return point // If the point ID does not match the point ID of the active joint, return the point
                             })
 
@@ -123,12 +167,14 @@ export default function Simulation() {
                     return wire // If the wire ID does not match the wire ID of the active joint, return the wire
                 })
 
-                setWires(newWires)
+                setWires(newWires) // Update the wires array
             }
         })
 
         svgRef.current.addEventListener('mouseup', () => {
             setActiveJoint({...activeJointRef.current, clicked: false}) // If the mouse is released, set the active joint to null
+            showAxis('x', null, true) // Hide the x axis
+            showAxis('y', null, true) // Hide the y axis
         })
 
         svgRef.current.addEventListener('contextmenu', e => { // If the right mouse button is clicked, cancel the wire
@@ -185,6 +231,10 @@ export default function Simulation() {
                     </SelectedComponentContext.Provider>
                 </SvgRectContext.Provider>
             </svg>
+            <div className={styles.axes}>
+                <div className={styles.x} ref={xAxisRef}></div>
+                <div className={styles.y} ref={yAxisRef}></div>
+            </div>
         </div>
     )
 }

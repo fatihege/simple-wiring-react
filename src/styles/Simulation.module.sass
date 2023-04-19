@@ -1,3 +1,33 @@
 .container
   border: 1px solid #ababab
   width: max-content
+  height: max-content
+  position: relative
+
+  .axes
+    position: absolute
+    top: 0
+    left: 0
+    width: 100%
+    height: 100%
+    pointer-events: none
+
+    .x, .y
+      position: absolute
+      background-color: #41ddff
+      display: none
+
+      &.x
+        width: 100%
+        height: 2px
+        left: 0
+        transform: translateY(-1px)
+
+      &.y
+        width: 2px
+        height: 100%
+        top: 0
+        transform: translateX(-1px)
+
+      &.show
+        display: block
