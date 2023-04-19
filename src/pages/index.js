@@ -1,9 +1,20 @@
+import {createContext, useRef, useState} from 'react'
 import Head from 'next/head'
 import Components from '@/components/components'
 import Simulation from '@/components/simulation'
 import styles from '@/styles/Home.module.sass'
 
+export const SnappingContext = createContext(false) // Whether snapping is enabled
+
 export default function Home() {
+    const [snapping, _setSnapping] = useState(false) // Whether snapping is enabled
+    const snappingRef = useRef(snapping) // Reference to the snapping state
+
+    const setSnapping = value => { // Set the snapping state
+        snappingRef.current = value
+        _setSnapping(value)
+    }
+
     return (
         <>
             <Head>
@@ -22,8 +33,10 @@ export default function Home() {
                     line to create joint and press delete on the joint to delete the joint, press the delete key to
                     remove the line, and press the escape key to deselect the component.
                 </p>
-                <Components/>
-                <Simulation/>
+                <SnappingContext.Provider value={[snappingRef, setSnapping]}>
+                    <Components/>
+                    <Simulation/>
+                </SnappingContext.Provider>
             </div>
         </>
     )
