@@ -13,7 +13,7 @@ const WIRE_COLOR = '#00dc70', // Color of the wire
     WIRE_BORDER_WIDTH = 1, // Width of the wire border
     WIRE_SELECTION_COLOR = 'rgba(0,157,255,0.4)', // Color of the wire selection
     WIRE_SELECTION_WIDTH = 6, // Width of the wire selection
-    WIRE_WIDTH = 4 // Width of the wire
+    WIRE_WIDTH = 3 // Width of the wire
 
 // Wire joint component
 const WireJoint = ({wire, x, y, id}) => {
