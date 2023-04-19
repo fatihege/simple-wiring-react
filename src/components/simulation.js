@@ -133,30 +133,32 @@ export default function Simulation() {
                         else { // If the joint is a point in the wire, update the point
                             const pointPos = wire.points.find(point => point.id === activeJointRef.current.id) // Get the position of the point in the points array
                             const newPoints = wire.points.map(point => { // Map through the points array
-                                let xSnapId = null // ID of the point to snap to on the x axis
-                                let ySnapId = null // ID of the point to snap to on the y axis
+                                if (point.id === activeJointRef.current.id) { // If the point ID matches the point ID of the active joint, update the position of the point
+                                    let xSnapId = null // ID of the point to snap to on the x axis
+                                    let ySnapId = null // ID of the point to snap to on the y axis
 
-                                if (xSnapId === null && Math.abs(x - wire.start.x) < SNAPPING_DISTANCE) xSnapId = wire.start.id // If the x coordinate is within the snapping distance of the start point, set the xSnapId to the start point ID
-                                if (ySnapId === null && Math.abs(y - wire.start.y) < SNAPPING_DISTANCE) ySnapId = wire.start.id // If the y coordinate is within the snapping distance of the start point, set the ySnapId to the start point ID
+                                    if (xSnapId === null && Math.abs(x - wire.start.x) < SNAPPING_DISTANCE) xSnapId = wire.start.id // If the x coordinate is within the snapping distance of the start point, set the xSnapId to the start point ID
+                                    if (ySnapId === null && Math.abs(y - wire.start.y) < SNAPPING_DISTANCE) ySnapId = wire.start.id // If the y coordinate is within the snapping distance of the start point, set the ySnapId to the start point ID
 
-                                if (xSnapId === null && Math.abs(x - wire.end.x) < SNAPPING_DISTANCE) xSnapId = wire.end.id // If the x coordinate is within the snapping distance of the end point, set the xSnapId to the end point ID
-                                if (ySnapId === null && Math.abs(y - wire.end.y) < SNAPPING_DISTANCE) ySnapId = wire.end.id // If the y coordinate is within the snapping distance of the end point, set the ySnapId to the end point ID
+                                    if (xSnapId === null && Math.abs(x - wire.end.x) < SNAPPING_DISTANCE) xSnapId = wire.end.id // If the x coordinate is within the snapping distance of the end point, set the xSnapId to the end point ID
+                                    if (ySnapId === null && Math.abs(y - wire.end.y) < SNAPPING_DISTANCE) ySnapId = wire.end.id // If the y coordinate is within the snapping distance of the end point, set the ySnapId to the end point ID
 
-                                wire.points.map(p => {
-                                    if (p.id === pointPos.id) return // If the point ID matches the point ID of the active joint, return (to prevent snapping to itself
-                                    if (xSnapId === null && Math.abs(x - p.x) < SNAPPING_DISTANCE) xSnapId = p.id // If the x coordinate is within the snapping distance of a point, set the xSnapId to the point ID
-                                    if (ySnapId === null && Math.abs(y - p.y) < SNAPPING_DISTANCE) ySnapId = p.id // If the y coordinate is within the snapping distance of a point, set the ySnapId to the point ID
-                                })
+                                    wire.points.map(p => {
+                                        if (p.id === pointPos.id) return // If the point ID matches the point ID of the active joint, return (to prevent snapping to itself
+                                        if (xSnapId === null && Math.abs(x - p.x) < SNAPPING_DISTANCE) xSnapId = p.id // If the x coordinate is within the snapping distance of a point, set the xSnapId to the point ID
+                                        if (ySnapId === null && Math.abs(y - p.y) < SNAPPING_DISTANCE) ySnapId = p.id // If the y coordinate is within the snapping distance of a point, set the ySnapId to the point ID
+                                    })
 
-                                const newX = xSnapId ? (xSnapId >= 0 ? wire.points.find(p => p.id === xSnapId).x : xSnapId === -1 ? wire.start.x : xSnapId === -2 ? wire.end.x : x) : x // If the xSnapId is not null, set the x coordinate to the x coordinate of the point to snap to, otherwise set the x coordinate to the x coordinate of the mouse
-                                const newY = ySnapId ? (ySnapId >= 0 ? wire.points.find(p => p.id === ySnapId).y : ySnapId === -1 ? wire.start.y : ySnapId === -2 ? wire.end.y : y) : y // If the ySnapId is not null, set the y coordinate to the y coordinate of the point to snap to, otherwise set the y coordinate to the y coordinate of the mouse
+                                    const newX = xSnapId ? (xSnapId >= 0 ? wire.points.find(p => p.id === xSnapId).x : xSnapId === -1 ? wire.start.x : xSnapId === -2 ? wire.end.x : x) : x // If the xSnapId is not null, set the x coordinate to the x coordinate of the point to snap to, otherwise set the x coordinate to the x coordinate of the mouse
+                                    const newY = ySnapId ? (ySnapId >= 0 ? wire.points.find(p => p.id === ySnapId).y : ySnapId === -1 ? wire.start.y : ySnapId === -2 ? wire.end.y : y) : y // If the ySnapId is not null, set the y coordinate to the y coordinate of the point to snap to, otherwise set the y coordinate to the y coordinate of the mouse
 
-                                if (xSnapId) showAxis('y', newX) // If the xSnapId is not null, show the x axis
-                                else showAxis('y', null, true) // If the xSnapId is null, hide the x axis
-                                if (ySnapId) showAxis('x', newY) // If the ySnapId is not null, show the y axis
-                                else showAxis('x', null, true) // If the ySnapId is null, hide the y axis
+                                    if (xSnapId) showAxis('y', newX) // If the xSnapId is not null, show the x axis
+                                    else showAxis('y', null, true) // If the xSnapId is null, hide the x axis
+                                    if (ySnapId) showAxis('x', newY) // If the ySnapId is not null, show the y axis
+                                    else showAxis('x', null, true) // If the ySnapId is null, hide the y axis
 
-                                if (point.id === activeJointRef.current.id) return {...point, x: newX, y: newY} // If the point ID matches the point ID of the active joint, update the point
+                                    return {...point, x: newX, y: newY} // Return the point with the updated position
+                                } // If the point ID matches the point ID of the active joint, update the point
                                 return point // If the point ID does not match the point ID of the active joint, return the point
                             })
 
