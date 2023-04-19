@@ -7,16 +7,13 @@
 3) Open the terminal or command prompt in the project directory.
 4) Run `npm i` to install all packages.
 
----
 ## How to deploy
 If you want to start the development server, run the `npm run dev` command, if you want to run the production server,
 first compile the code with the `npm run build` command and then run the `npm run start` command. At the end of both
 options, the server will start running at http://localhost:3000. (Default port is `3000`)
 
----
 ## How to change port
 If you want to change the port of the application, add `-p <port>` to the end of the `dev` and `start` commands in the
 `package.json` file
 
----
 ###### &copy; Copyright 2023 | Fatih EGE
