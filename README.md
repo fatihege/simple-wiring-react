@@ -1,3 +1,6 @@
+# Live Deployment
+[Click](https://arduino-simulator-react.vercel.app/) (or go to https://arduino-simulator-react.vercel.app/) to see the latest version of the application in live deployment.
+
 ## How to install
 1) First of all, download and install the LTS Node.js version.
 2) Clone the Git repository or download and extract the source code.
